@@ -27,10 +27,14 @@ public class ProdutoPerecivel  extends Produto {
         if (dataDeValidade.isBefore(hoje)){
             throw new IllegalStateException("Produto vencido. Não pode ser vendido.");
         }
-        if(dataDeValidade.isBefore(hoje.plusDays(PRAZO_DESCONTO))){
-            return super.valorDeVenda() * DESCONTO;
+        double valorNormal = super.valorDeVenda();
+
+        long diasParaVencer = java.time.temporal.ChronoUnit.DAYS.between(hoje, dataDeValidade); //variavel para calcular vencimento a partir de hoje
+
+        if (diasParaVencer <= PRAZO_DESCONTO) {
+            return valorNormal * (1 - DESCONTO);
         }
-        
-        return super.valorDeVenda();
-    }
+
+        return valorNormal;
+        }
 }
