@@ -79,9 +79,9 @@ public class Comercio {
             Produto[] vetor = new Produto[numeroProdutos + MAX_NOVOS_PRODUTOS];
             for (int i = 0; i < numeroProdutos && arq.hasNextLine(); i++) {
                 vetor[i] = Produto.criarDoTexto(arq.nextLine());
-            }
-              zquantosProdutos = numeroProdutos;
+                quantosProdutos = numeroProdutos;
                 return vetor;
+            }
         } catch (Exception e) {
             quantosProdutos = 0;
             return new Produto[MAX_NOVOS_PRODUTOS];
@@ -188,7 +188,7 @@ public class Comercio {
 
         if (tipo == 1) {
 
-            novoProduto = new ProdutoNaoPerecivel(descricao, preco, margem);
+            novoProduto = new ProdutoNaoPerecivel(descricao, preco, margem,quantosProdutos);
 
         } else if (tipo == 2) {
 
@@ -201,7 +201,7 @@ public class Comercio {
             java.time.LocalDate validade =
                     java.time.LocalDate.parse(data, formatter);
 
-            novoProduto = new ProdutoPerecivel(descricao, preco, margem, validade);
+            novoProduto = new ProdutoPerecivel(descricao, preco, margem, validade,quantosProdutos);
         }
 
         produtosCadastrados[quantosProdutos] = novoProduto;

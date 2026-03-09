@@ -8,8 +8,8 @@ public class ProdutoPerecivel extends Produto {
     private static int PRAZO_DESCONTO = 7;
     private LocalDate dataDeValidade;
 
-    public ProdutoPerecivel(String desc, double precoCusto, double margemLucro, LocalDate dataDeValidade) {
-        super(desc, precoCusto, margemLucro);
+    public ProdutoPerecivel(String desc, double precoCusto, double margemLucro, LocalDate dataDeValidade, int quantidadeProduto) {
+        super(desc, precoCusto, margemLucro, quantidadeProduto);
         if (dataDeValidade.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Data de validade não pode ser anterior a data atual.");
         }

@@ -5,9 +5,10 @@ import java.time.format.DateTimeFormatter;
 public abstract class Produto {
 
 	private static final double MARGEM_PADRAO = 0.2;
-	private String descricao;
+	protected String descricao;
 	protected double precoCusto;
 	protected double margemLucro;
+	protected int quantidadeProduto; // Atributo novo em produto para saber quantidade de um produto
 
 	/**
 	 * Inicializador privado. Os valores default, em caso de erro, são:
@@ -17,12 +18,13 @@ public abstract class Produto {
 	 * @param precoCusto  Preço do produto (mínimo 0.01)
 	 * @param margemLucro Margem de lucro (mínimo 0.01)
 	 */
-	private void init(String desc, double precoCusto, double margemLucro) {
+	private void init(String desc, double precoCusto, double margemLucro, int quantidadeProduto) {
 
-		if ((desc.length() >= 3) && (precoCusto > 0.0) && (margemLucro > 0.0)) {
+		if ((desc.length() >= 3) && (precoCusto > 0.0) && (margemLucro > 0.0) && (quantidadeProduto > 0)) {
 			descricao = desc;
 			this.precoCusto = precoCusto;
 			this.margemLucro = margemLucro;
+			this.quantidadeProduto = quantidadeProduto;
 		} else {
 			throw new IllegalArgumentException("Valores inválidos para os dados do produto.");
 		}
@@ -37,8 +39,8 @@ public abstract class Produto {
 	 * @param margemLucro    Margem de lucro (mínimo 0.01)
 	 * @param dataDeValidade
 	 */
-	protected Produto(String desc, double precoCusto, double margemLucro) {
-		init(desc, precoCusto, margemLucro);
+	protected Produto(String desc, double precoCusto, double margemLucro, int quantidadeProduto) {
+		init(desc, precoCusto, margemLucro, quantidadeProduto);
 	}
 
 	/**
@@ -53,8 +55,8 @@ public abstract class Produto {
 	 * @param margemLucro2
 	 */
 
-	public Produto(String desc, double precoCusto) {
-		init(desc, precoCusto, MARGEM_PADRAO);
+	public Produto(String desc, double precoCusto, int quantidadeProduto) {
+		init(desc, precoCusto, MARGEM_PADRAO, quantidadeProduto);
 	}
 
 	/**
@@ -128,16 +130,17 @@ public abstract class Produto {
 		String descricao = partes[1].trim();
 		double precoCusto = Double.parseDouble(partes[2].trim().replace(",", "."));
 		double margemLucro = Double.parseDouble(partes[3].trim().replace(",", "."));
+		int quantidadeProduto = Integer.parseInt(partes[4].trim());
 
 		// 1-> ProdutoNaoPerecivel, 2-> ProdutoPerecivel
 		if (tipo == 1) {
-			novoProduto = new ProdutoNaoPerecivel(descricao, precoCusto, margemLucro);
+			novoProduto = new ProdutoNaoPerecivel(descricao, precoCusto, margemLucro, quantidadeProduto);
 		} else if (tipo == 2) {
 			if (partes.length < 5) {
 				throw new IllegalArgumentException("Data de validade ausente para produto perecível.");
 			}
 			LocalDate dataDeValidade = LocalDate.parse(partes[4].trim(), formatoData);
-			novoProduto = new ProdutoPerecivel(descricao, precoCusto, margemLucro, dataDeValidade);
+			novoProduto = new ProdutoPerecivel(descricao, precoCusto, margemLucro, dataDeValidade, quantidadeProduto);
 		} else {
 			throw new IllegalArgumentException("Tipo de produto inválido: " + tipo);
 		}
