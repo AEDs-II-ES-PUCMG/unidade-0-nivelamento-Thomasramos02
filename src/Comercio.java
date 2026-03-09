@@ -79,9 +79,9 @@ public class Comercio {
             Produto[] vetor = new Produto[numeroProdutos + MAX_NOVOS_PRODUTOS];
             for (int i = 0; i < numeroProdutos && arq.hasNextLine(); i++) {
                 vetor[i] = Produto.criarDoTexto(arq.nextLine());
-                quantosProdutos = numeroProdutos;
-                return vetor;
             }
+              quantosProdutos = numeroProdutos;
+                return vetor;
         } catch (Exception e) {
             quantosProdutos = 0;
             return new Produto[MAX_NOVOS_PRODUTOS];
@@ -98,9 +98,14 @@ public class Comercio {
          * toString() já implementado).
          */
 
-        for (int i = 0; i < produtosCadastrados.length; i++) {
-            System.out.println();
-        }
+        if (quantosProdutos == 0) {
+        System.out.println("Nenhum produto cadastrado.");
+        return;
+    }
+
+    for (int i = 0; i < quantosProdutos; i++) {
+        System.out.println((i + 1) + " - " + produtosCadastrados[i]);
+    }
     }
 
     /**
@@ -117,6 +122,25 @@ public class Comercio {
          * implementado na classe Produto)
          * e imprimir na tela seus dados.
          */
+
+         System.out.print("Digite o nome do produto: ");
+         String nome = teclado.nextLine();
+
+         boolean encontrado = false;
+
+    for (int i = 0; i < quantosProdutos; i++) {
+
+        if (produtosCadastrados[i].getDescricao().equalsIgnoreCase(nome)) {
+            System.out.println(produtosCadastrados[i]);
+            encontrado = true;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        System.out.println("Produto não encontrado.");
+    }
+
     }
 
     /**
@@ -138,6 +162,56 @@ public class Comercio {
          * de produtosCadastrados e
          * incrementando a variável de controle da quantidade de produtos.
          */
+        if (quantosProdutos >= produtosCadastrados.length) {
+        System.out.println("Limite de produtos atingido.");
+        return;
+    }
+
+    System.out.println("Tipo de produto:");
+    System.out.println("1 - Não Perecível");
+    System.out.println("2 - Perecível");
+
+    int tipo = Integer.parseInt(teclado.nextLine());
+
+    System.out.print("Descrição: ");
+    String descricao = teclado.nextLine();
+
+    System.out.print("Preço de custo: ");
+    double preco = Double.parseDouble(teclado.nextLine());
+
+    System.out.print("Margem de lucro: ");
+    double margem = Double.parseDouble(teclado.nextLine());
+
+    Produto novoProduto = null;
+
+    try {
+
+        if (tipo == 1) {
+
+            novoProduto = new ProdutoNaoPerecivel(descricao, preco, margem);
+
+        } else if (tipo == 2) {
+
+            System.out.print("Data de validade (dd/MM/yyyy): ");
+            String data = teclado.nextLine();
+
+            java.time.format.DateTimeFormatter formatter =
+                    java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+            java.time.LocalDate validade =
+                    java.time.LocalDate.parse(data, formatter);
+
+            novoProduto = new ProdutoPerecivel(descricao, preco, margem, validade);
+        }
+
+        produtosCadastrados[quantosProdutos] = novoProduto;
+        quantosProdutos++;
+
+        System.out.println("Produto cadastrado com sucesso!");
+
+    } catch (Exception e) {
+        System.out.println("Erro ao cadastrar produto: " + e.getMessage());
+    }
     }
 
     /**
@@ -155,6 +229,17 @@ public class Comercio {
          * uma linha de texto com os dados de cada objeto Produto, escrevendo-a no
          * arquivo.
          */
+         try (java.io.PrintWriter writer = new java.io.PrintWriter(nomeArquivo)) {
+
+        writer.println(quantosProdutos);
+
+        for (int i = 0; i < quantosProdutos; i++) {
+            writer.println(produtosCadastrados[i].gerarDadosTexto());
+        }
+
+    } catch (Exception e) {
+        System.out.println("Erro ao salvar produtos: " + e.getMessage());
+    }
     }
 
     public static void main(String[] args) throws Exception {
