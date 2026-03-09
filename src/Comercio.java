@@ -80,7 +80,7 @@ public class Comercio {
             for (int i = 0; i < numeroProdutos && arq.hasNextLine(); i++) {
                 vetor[i] = Produto.criarDoTexto(arq.nextLine());
             }
-              quantosProdutos = numeroProdutos;
+              zquantosProdutos = numeroProdutos;
                 return vetor;
         } catch (Exception e) {
             quantosProdutos = 0;
